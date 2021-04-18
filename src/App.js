@@ -1,23 +1,33 @@
-import logo from './logo.svg';
 import './App.css';
+import Map from './components/map/Map'
+import Global from './components/global/Global'
+import Country from './components/country/Country'
+import { DataContext } from './helper/Contexts'
+import { useEffect, useState } from 'react';
 
 function App() {
+
+  const [data,setData] = useState([])
+
+  useEffect( () => {
+
+    fetch('https://disease.sh/v3/covid-19/countries').then(res => res.json()).then( dt => {
+      setData(dt)
+    })
+
+  }, [] )
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+      <DataContext.Provider value={ { data } }>
+        <Map />
+        <div className="information">
+          <Global />
+          <Country />
+        </div>
+      </DataContext.Provider>
+
     </div>
   );
 }
